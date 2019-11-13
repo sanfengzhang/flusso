@@ -5,9 +5,12 @@ import com.hanl.flink.DefaultKafkaDeserializationSchema;
 import com.hanl.flink.JobConfigContext;
 import com.hanl.flink.Message;
 import lombok.Data;
+import org.apache.flink.api.common.io.ratelimiting.FlinkConnectorRateLimiter;
+import org.apache.flink.api.common.io.ratelimiting.GuavaFlinkConnectorRateLimiter;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.List;
 import java.util.Map;
@@ -43,9 +46,15 @@ public class KafkaSource {
 
     private String charSet;
 
+    /**
+     * Rate in bytes per second for the consumer on a whole.
+     */
+    private long globalRateBytesPerSecond = Long.MIN_VALUE;
+
     private Map<String, Object> kafkaSource;
 
     private JobConfigContext jobConfigContext;
+
 
     @SuppressWarnings("unchecked")
     public KafkaSource(JobConfigContext jobConfigContext) throws Exception {
@@ -60,13 +69,23 @@ public class KafkaSource {
 
     public DataStream<Message> getSource(StreamExecutionEnvironment env) {
         DataStream<Message> dataStreamSource;
-        if (null == pattern) {
-            dataStreamSource = env.addSource(new FlinkKafkaConsumer010<Message>(topics, new DefaultKafkaDeserializationSchema(charSet), props),
-                    "FLINK-KAFKA-SOURCE");
-        } else {
-            dataStreamSource = env.addSource(new FlinkKafkaConsumer010<Message>(pattern, new DefaultKafkaDeserializationSchema(charSet), props),
-                    "FLINK-KAFKA-SOURCE-PATTERN");
+        FlinkConnectorRateLimiter rateLimiter = null;
+        if (globalRateBytesPerSecond != Long.MIN_VALUE) {
+            rateLimiter = new GuavaFlinkConnectorRateLimiter();
+            rateLimiter.setRate(globalRateBytesPerSecond);
         }
+        FlinkKafkaConsumer010<Message> flinkKafkaConsumer010 = null;
+        if (null == pattern) {
+            flinkKafkaConsumer010 = new FlinkKafkaConsumer010<Message>(topics, new DefaultKafkaDeserializationSchema(charSet), props);
+
+        } else {
+            flinkKafkaConsumer010 = new FlinkKafkaConsumer010<Message>(pattern, new DefaultKafkaDeserializationSchema(charSet), props);
+        }
+        if (null != rateLimiter) {
+            flinkKafkaConsumer010.setRateLimiter(new GuavaFlinkConnectorRateLimiter());
+        }
+        dataStreamSource = env.addSource(flinkKafkaConsumer010, "FLINK-KAFKA-SOURCE");
+
         return dataStreamSource;
     }
 }
