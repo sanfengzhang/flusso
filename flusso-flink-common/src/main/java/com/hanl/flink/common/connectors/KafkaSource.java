@@ -64,6 +64,8 @@ public class KafkaSource {
         this.props = new Properties();
         this.props.putAll(kafkaSource);
         this.charSet = kafkaSource.get(KEY_CHARSET).toString();
+        this.globalRateBytesPerSecond = Long.parseLong(kafkaSource.get(KEY_CHARSET) == null ?
+                                          Long.MIN_VALUE + "" : kafkaSource.get(KEY_CHARSET).toString());
         this.topics = (List<String>) kafkaSource.get(KEY_TOPICS);
     }
 
