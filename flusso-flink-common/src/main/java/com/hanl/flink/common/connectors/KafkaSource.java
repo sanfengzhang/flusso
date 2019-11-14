@@ -49,7 +49,7 @@ public class KafkaSource {
     /**
      * Rate in bytes per second for the consumer on a whole.
      */
-    private long globalRateBytesPerSecond = Long.MIN_VALUE;
+    private long globalRateBytesPerSecond;
 
     private Map<String, Object> kafkaSource;
 
@@ -65,7 +65,7 @@ public class KafkaSource {
         this.props.putAll(kafkaSource);
         this.charSet = kafkaSource.get(KEY_CHARSET).toString();
         this.globalRateBytesPerSecond = Long.parseLong(kafkaSource.get(KEY_CHARSET) == null ?
-                                          Long.MIN_VALUE + "" : kafkaSource.get(KEY_CHARSET).toString());
+                Long.MIN_VALUE + "" : kafkaSource.get(KEY_CHARSET).toString());
         this.topics = (List<String>) kafkaSource.get(KEY_TOPICS);
     }
 
