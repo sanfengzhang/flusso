@@ -15,9 +15,13 @@
  */
 package org.kitesdk.morphline.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,6 +51,8 @@ public class MorphlineContext {
     private Map<String, Class<CommandBuilder>> commandBuilders = Collections.emptyMap();
 
     public static final String CONTEXT_COMMANDS = "context.commands";
+
+    public static final String COMMAND_CLASS_EXPORT_ID = "command.class.export.dir";
 
     private static final Logger LOG = LoggerFactory.getLogger(MorphlineContext.class);
 
@@ -283,11 +289,40 @@ public class MorphlineContext {
             return this;
         }
 
+        public void loadExportJar() {
+            String jarFileDirPath = null;
+            try {
+                Object obj = settings.get(COMMAND_CLASS_EXPORT_ID);
+                if (obj != null) {
+                    jarFileDirPath = obj.toString();
+                    File jarFileDir = new File(jarFileDirPath);
+                    if (jarFileDir.isDirectory()) {
+                        File jars[] = jarFileDir.listFiles();
+                        if (jars.length > 0) {
+                            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+                            Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+                            add.setAccessible(true);
+                            int size = jars.length;
+                            Object[] urlArray = new Object[size];
+                            for (int i = 0; i < size; i++) {
+                                urlArray[i] = jars[0].toURI().toURL();
+                                LOG.info("add export jar url={}", urlArray[i]);
+                            }
+                            add.invoke(classLoader, urlArray);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error("Load export jars failed jarFileDirPath" + jarFileDirPath, e);
+            }
+        }
+
         public MorphlineContext build() {
             context.settings = settings;
             context.exceptionHandler = exceptionHandler;
             context.metricRegistry = metricRegistry;
             context.healthCheckRegistry = healthCheckRegistry;
+            loadExportJar();
             return context;
         }
 

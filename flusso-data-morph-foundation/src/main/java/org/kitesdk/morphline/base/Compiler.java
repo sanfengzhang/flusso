@@ -44,10 +44,6 @@ public final class Compiler {
 
     private static final Object LOCK = new Object();
 
-    private static volatile boolean hadLoadJar = false;
-
-    public static final String COMMAND_CLASS_EXPORT_ID = "command.class.export.dir";
-
     private static final Logger logger = LoggerFactory.getLogger(Compiler.class);
 
     public Compiler() {
@@ -62,7 +58,6 @@ public final class Compiler {
     public Command compile(File morphlineFile, String morphlineId, MorphlineContext morphlineContext, Command finalChild, Config... overrides) {
         Config config;
         try {
-            loadExportJar(morphlineContext);
             config = parse(morphlineFile, overrides);
         } catch (Exception e) {
             throw new MorphlineCompilationException("Cannot parse morphline file: " + morphlineFile, null, e);
@@ -138,11 +133,6 @@ public final class Compiler {
      * will feed records into finalChild or into /dev/null if finalChild is null.
      */
     public Command compile(Config morphlineConfig, MorphlineContext morphlineContext, Command finalChild) {
-        try {
-            loadExportJar(morphlineContext);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         if (finalChild == null) {
             finalChild = new DropRecordBuilder().build(null, null, null, morphlineContext);
         }
@@ -155,33 +145,6 @@ public final class Compiler {
         String id = new Configs().getString(morphlineConfig, "id");
         commandMap.put(id, command);
         return command;
-    }
-
-    private void loadExportJar(MorphlineContext context) throws Exception {
-        if (hadLoadJar) {
-            return;
-        }
-        Object obj = context.getSettings().get(COMMAND_CLASS_EXPORT_ID);
-        if (obj != null) {
-            String jarFileDirPath = obj.toString();
-            File jarFileDir = new File(jarFileDirPath);
-            if (jarFileDir.isDirectory()) {
-                File jars[] = jarFileDir.listFiles();
-                if (jars.length > 0) {
-                    URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-                    Method add = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-                    add.setAccessible(true);
-                    int size = jars.length;
-                    Object[] urlArray = new Object[size];
-                    for (int i = 0; i < size; i++) {
-                        urlArray[i] = jars[0].toURI().toURL();
-                        logger.info("add export jar url={}", urlArray[i]);
-                    }
-                    add.invoke(classLoader, urlArray);
-                }
-            }
-        }
-        hadLoadJar = true;
     }
 
 }
