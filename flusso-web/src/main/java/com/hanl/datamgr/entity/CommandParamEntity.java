@@ -16,7 +16,7 @@ import javax.persistence.*;
 @DiscriminatorValue("cmd_param_config")
 @Data
 @EqualsAndHashCode(exclude = {"commandEntity"}, callSuper = true)
-public class CommandParamEntity extends FiledEntity {
+public class CommandParamEntity extends FieldEntity {
 
     @ManyToOne
     @JoinColumn(name = "cmd_id")

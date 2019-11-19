@@ -35,7 +35,7 @@ public class CommandInstanceEntity implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "commandInstanceEntity", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JsonIgnoreProperties(value = {"commandInstanceEntity"})
-    private Set<CommandInstanceFlowRelation> cmdInstanceFlowRelSet = new HashSet<>();//该command实例节点包含的子流程关系
+    private Set<CommandInstanceFlowRelation> cmdInstanceFlowRelSet = new HashSet<>();//该command实例节点包含的流程关系
 
     @Column(name = "cmd_input")
     private String commandInputParams;//cmd的的输入参数，Record中的参数

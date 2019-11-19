@@ -18,10 +18,10 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "filed_type")
+@Table(name = "field_type")
 @DiscriminatorColumn(name = "DISCRIMINATOR", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("filed_entity")
-public class FiledEntity implements Serializable {
+@DiscriminatorValue("field_entity")
+public class FieldEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,17 +31,17 @@ public class FiledEntity implements Serializable {
     protected String id;
 
     @Basic
-    @Column(name = "filed_name")
+    @Column(name = "field_name")
     protected String fieldName;
 
     @Basic
-    @Column(name = "filed_type")
+    @Column(name = "field_type")
     protected String fieldType;
 
-    @Column(name = "filed_value",columnDefinition = "varchar(255) COMMENT '字段赋值'")
+    @Column(name = "field_value",columnDefinition = "varchar(255) COMMENT '字段赋值'")
     protected String fieldValue;
 
-    @Column(name = "filed_format",columnDefinition = "varchar(32) COMMENT '数据格式化,yyyy-MM-dd'")
+    @Column(name = "field_format",columnDefinition = "varchar(32) COMMENT '数据格式化,yyyy-MM-dd'")
     protected String format;
 
     @Column(name = "cmd_display_name")

@@ -1,6 +1,6 @@
 package com.hanl.datamgr.repository;
 
-import com.hanl.datamgr.entity.FiledEntity;
+import com.hanl.datamgr.entity.FieldEntity;
 import com.hanl.datamgr.repository.support.BaseRepository;
 
 /**
@@ -8,7 +8,7 @@ import com.hanl.datamgr.repository.support.BaseRepository;
  * @date :2019/10/12
  * @desc:
  */
-public interface FiledRepository extends BaseRepository<FiledEntity, String> {
+public interface FiledRepository extends BaseRepository<FieldEntity, String> {
 
 
 

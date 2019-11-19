@@ -14,7 +14,7 @@ import javax.persistence.*;
 @DiscriminatorValue("cmd_init_param")
 @Data
 @EqualsAndHashCode(exclude = {"commandInstanceEntity"}, callSuper = true)
-public class CommandInstanceParamEntity extends FiledEntity {
+public class CommandInstanceParamEntity extends FieldEntity {
 
     @ManyToOne
     private CommandInstanceEntity commandInstanceEntity;

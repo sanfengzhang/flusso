@@ -1,6 +1,6 @@
 package com.hanl.datamgr.vo;
 
-import com.hanl.datamgr.entity.FiledEntity;
+import com.hanl.datamgr.entity.FieldEntity;
 import lombok.Data;
 import lombok.ToString;
 
@@ -11,7 +11,7 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class FiledTypeVO extends BaseVO<FiledEntity> {
+public class FiledTypeVO extends BaseVO<FieldEntity> {
 
     private String id;
 
@@ -30,12 +30,12 @@ public class FiledTypeVO extends BaseVO<FiledEntity> {
     private String displayName;
 
     @Override
-    public FiledEntity to() {
+    public FieldEntity to() {
         return null;
     }
 
     @Override
-    public void from(FiledEntity entity) {
+    public void from(FieldEntity entity) {
 
         this.setFieldName(entity.getFieldName());
         this.setId(entity.getId());

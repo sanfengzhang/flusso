@@ -2,7 +2,7 @@ package com.hanl.datamgr.validator;
 
 import com.hanl.datamgr.Application;
 import com.hanl.datamgr.entity.CommandInstanceParamEntity;
-import com.hanl.datamgr.entity.FiledEntity;
+import com.hanl.datamgr.entity.FieldEntity;
 import com.hanl.datamgr.repository.CommandInstanceParamRepository;
 import com.hanl.datamgr.support.DataTransformUtils;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class DataTransformUtilsTest {
 
     @Test
     public void testTrans() throws Exception {
-        FiledEntity commandParamEntity = new CommandInstanceParamEntity();
+        FieldEntity commandParamEntity = new CommandInstanceParamEntity();
         commandParamEntity.setFieldType("12sda");
         Class clazz = (Class) commandParamEntity.getClass();
        // Field f = clazz.getDeclaredField("fieldType");

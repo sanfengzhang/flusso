@@ -1,6 +1,6 @@
 package com.hanl.datamgr.vo;
 
-import com.hanl.datamgr.entity.BusDataTypeEntity;
+import com.hanl.datamgr.entity.BusDataClassifyEntity;
 import com.hanl.datamgr.support.AlreadyInDB;
 import lombok.Data;
 import lombok.ToString;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class BusDataTypeVO extends BaseVO<BusDataTypeEntity> {
+public class BusDataTypeVO extends BaseVO<BusDataClassifyEntity> {
 
     private String id;
 
@@ -40,13 +40,13 @@ public class BusDataTypeVO extends BaseVO<BusDataTypeEntity> {
     private String desc;
 
     @Override
-    public BusDataTypeEntity to() {
+    public BusDataClassifyEntity to() {
 
         return null;
     }
 
     @Override
-    public void from(BusDataTypeEntity busDataTypeEntity) {
+    public void from(BusDataClassifyEntity busDataClassifyEntity) {
 
     }
 }
