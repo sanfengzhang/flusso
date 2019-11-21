@@ -1,0 +1,9 @@
+com\hanl\datamgr\validator\DataTransformUtilsTest.class
+com\hanl\datamgr\core\CreateFiledParamTest.class
+com\hanl\datamgr\core\JobServiceTest.class
+com\hanl\datamgr\core\MorphTest.class
+com\hanl\datamgr\validator\AlreadyInDBConstraintValidatorTest.class
+com\hanl\datamgr\core\InitSysDataTest.class
+com\hanl\datamgr\MenuTest.class
+com\hanl\datamgr\core\Collector.class
+com\hanl\datamgr\core\CommandPipeLineServiceTest.class
