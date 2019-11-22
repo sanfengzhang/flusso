@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -28,6 +29,9 @@ public class BusDataClassifyEntity implements java.io.Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "busDataClassify")
     private Set<BusDataClassifyFieldEntity> busDataClassifyFieldSet;//描述该类型数据的字段信息
+
+    @OneToMany(mappedBy = "busDataClassifyEntity", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private Set<DataStorageEntity> dataStorageSet = new HashSet<>();
 
     @Column(name = "create_time")
     @CreationTimestamp
