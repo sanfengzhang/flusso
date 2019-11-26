@@ -20,7 +20,7 @@
 
         <module>flusso-data-morph-foundation</module>
 	    <module>flusso-data-morph-service</module>		
-	    <module>flusso-web</module>      
+	    <module>flusso-web-service</module>
         <module>flusso-data-rule-engine</module>
         <module>flusso-flink-common</module>
         <module>flusso-flink-app-samples</module>
