@@ -29,6 +29,9 @@ import java.util.jar.JarFile;
  * @author: Hanl
  * @date :2020/1/15
  * @desc:
+ * 主要是方便第三方开发完自己的包之后，可以通过上传Jar
+ * 包就可以将命令信息持久化到数据库。
+ * 用户只需要关注参数初始化就可以
  */
 @Service
 @Slf4j
@@ -49,7 +52,6 @@ public class CommandRegisterServiceImpl implements CommandRegisterService {
             try {
                 //
                 String classPath = uploadPath + "/" + jarFilePath + "/**/*.class";
-                System.out.println(classPath);
                 Resource[] source = resolver.getResources(classPath);
                 //不需要缓存
                 MetadataReaderFactory readerFactory = new SimpleMetadataReaderFactory(resolver);
