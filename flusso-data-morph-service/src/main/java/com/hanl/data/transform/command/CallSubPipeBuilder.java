@@ -1,5 +1,6 @@
 package com.hanl.data.transform.command;
 
+import com.hanl.data.common.CommandField;
 import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.*;
 import org.kitesdk.morphline.base.AbstractCommand;
@@ -63,6 +64,11 @@ public class CallSubPipeBuilder implements CommandBuilder {
                 logger.warn("SubProcess execution failed,subPipeId={},record={}", subPipeId, record);
             }
             return super.doProcess(record);
+        }
+
+        @CommandField(fieldName = "flowId", fieldType = "java.lang.String")
+        public String getSubPipeId() {
+            return subPipeId;
         }
     }
 }
