@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
  * @date :2019/11/22
  * @desc:
  */
-public class FlinkWatermarkTest {
+public class FlinkWatermarkExample {
 
     public static void main(String[] args) throws Exception {
 
@@ -75,6 +75,10 @@ public class FlinkWatermarkTest {
         sumDataStream.print();
     }
 
+    /**
+     *1.想清楚为什么会要做水位自动上涨的功能？
+     *
+     */
     public static void testWatermarkGenerator(DataStream<Tuple3<Long, String, Integer>> dataStream) {
         DataStream<Tuple3<Long, String, Integer>> wmDataStream = dataStream.assignTimestampsAndWatermarks(new AbstractWatermarkGenerator<Tuple3<Long, String, Integer>>() {
             @Override

@@ -24,6 +24,7 @@
         <module>flusso-data-rule-engine</module>
         <module>flusso-flink-common</module>
         <module>flusso-flink-app-samples</module>
+        <module>flusso-datalife-foundation-service</module>
 
     </modules>
 	
