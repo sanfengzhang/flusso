@@ -71,6 +71,7 @@ public class CommandEntity implements Serializable {
                 ", commandInstanceEntityList=" + ids +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
+                ",cmdParams="+cmdParams+
                 '}';
     }
 }

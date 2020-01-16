@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(classes = Application.class)
 @Transactional
 @Rollback(false)
-public class CommandRegisterServiceTest {
+public class CommandDescriptionRegisterServiceTest {
 
     @Autowired
     private CommandRegisterService commandRegisterService;
@@ -27,6 +27,6 @@ public class CommandRegisterServiceTest {
     @Test
     public void testPrintAnntation() throws BusException {
 
-        commandRegisterService.registerCommands("classes");
+        commandRegisterService.registerCommands("test-classes");
     }
 }

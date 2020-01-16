@@ -22,7 +22,7 @@ import java.util.Map;
 @SpringBootTest(classes = Application.class)
 @Transactional
 @Rollback(false)
-public class CommandPipeLineServiceTest {
+public class CommandDescriptionPipeLineServiceTest {
 
     @Autowired
     private CommandPipeLineService commandPipeLineService;
