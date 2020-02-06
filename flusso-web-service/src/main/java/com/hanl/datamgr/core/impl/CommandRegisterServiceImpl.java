@@ -1,29 +1,32 @@
 package com.hanl.datamgr.core.impl;
 
-import com.hanl.data.common.CommandDescription;
-import com.hanl.data.common.CommandField;
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 import com.hanl.datamgr.core.CommandRegisterService;
 import com.hanl.datamgr.entity.CommandEntity;
 import com.hanl.datamgr.entity.CommandParamEntity;
 import com.hanl.datamgr.exception.BusException;
+import com.hanl.datamgr.repository.CommandRepository;
 import com.hanl.datamgr.support.asm.FlussoAsmAnnotation;
 import com.hanl.datamgr.support.asm.FlussoClassVisitor;
 import lombok.extern.slf4j.Slf4j;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.asm.ClassReader;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -36,15 +39,28 @@ import java.util.jar.JarFile;
  */
 @Service
 @Slf4j
-public class CommandRegisterServiceImpl implements CommandRegisterService {
+public class CommandRegisterServiceImpl implements CommandRegisterService, InitializingBean {
 
     private ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(new FileSystemResourceLoader());
 
     private static final String COMMAND_SUPER_CLASS_NAME = AbstractCommand.class.getName();
 
+    @Autowired
+    private CommandRepository commandRepository;
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
 
     @Value("${app.upload.path}")
     private String uploadPath;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        ResourcePatternResolver resolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
+        Resource[] resources = resolver.getResources("classpath*:com/hanl/data/transform/command/**/*.class");
+        registerCommand(resources);
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -55,45 +71,59 @@ public class CommandRegisterServiceImpl implements CommandRegisterService {
                 //
                 String classPath = uploadPath + "/" + jarFilePath + "/**/*.class";
                 Resource[] source = resolver.getResources(classPath);
-                for (Resource resource : source) {
-                    if (resource.isReadable()) {
-                        CommandEntity commandEntity = new CommandEntity();
-                        ClassReader classReader = new ClassReader(resource.getInputStream());
-                        FlussoClassVisitor flussoClassVisitor = new FlussoClassVisitor();
-                        classReader.accept(flussoClassVisitor, ClassReader.EXPAND_FRAMES);
-                        String superClassName = classReader.getSuperName().replaceAll("/", ".");
-                        if (COMMAND_SUPER_CLASS_NAME.equals(superClassName)) {
-                            String clazzName = classReader.getClassName();
-                            clazzName = clazzName.replaceAll("/", ".").substring(0, clazzName.lastIndexOf("$")) + "Builder";
-                            commandEntity.setCommandClazz(clazzName);
-                            Iterator<FlussoAsmAnnotation> classAnnotations = flussoClassVisitor.getClazzAnnotations().iterator();
-                            while (classAnnotations.hasNext()) {
-                                FlussoAsmAnnotation flussoAsmAnnotation = classAnnotations.next();
-                                if (CommandDescription.class.getName().equals(flussoAsmAnnotation.getAnnotationClassName())) {
-                                    commandEntity.setCommandName(flussoAsmAnnotation.getAttr(CommandDescription.NAME).toString());
-                                    commandEntity.setCommandMorphName(flussoAsmAnnotation.getAttr(CommandDescription.MORPH_NAME).toString());
-                                    break;
-                                }
-                            }
-
-                            Set<CommandParamEntity> commandParamEntityList = new HashSet<>();
-                            Iterator<FlussoAsmAnnotation> fieldAnnotations = flussoClassVisitor.getFieldAnnotations().iterator();
-                            while (fieldAnnotations.hasNext()) {
-                                FlussoAsmAnnotation flussoAsmAnnotation = fieldAnnotations.next();
-                                if (CommandField.class.getName().equals(flussoAsmAnnotation.getAnnotationClassName())) {
-                                    CommandParamEntity commandParamEntity = new CommandParamEntity();
-                                    commandParamEntity.setFieldName(flussoAsmAnnotation.getAttr(CommandField.FILED_NAME).toString());
-                                    commandParamEntity.setFieldType(flussoAsmAnnotation.getAttr(CommandField.FILED_TYPE).toString());
-                                    commandParamEntityList.add(commandParamEntity);
-                                }
-                            }
-                            commandEntity.setCmdParams(commandParamEntityList);
-                        }
-
-                    }
-                }
+                registerCommand(source);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private void registerCommand(Resource[] source) throws IOException {
+        List<CommandEntity> commandEntityList = new ArrayList<>();
+        for (Resource resource : source) {
+            if (resource.isReadable()) {
+                ClassReader classReader = new ClassReader(resource.getInputStream());
+                FlussoClassVisitor flussoClassVisitor = new FlussoClassVisitor();
+                classReader.accept(flussoClassVisitor, ClassReader.EXPAND_FRAMES);
+                String superClassName = classReader.getSuperName().replaceAll("/", ".");
+                if (COMMAND_SUPER_CLASS_NAME.equals(superClassName)) {
+                    String clazzName = classReader.getClassName();
+                    try {
+                        clazzName = clazzName.replaceAll("/", ".").substring(0, clazzName.lastIndexOf("$"));
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    CommandEntity commandEntity = new CommandEntity();
+                    commandEntity.setCommandClazz(clazzName);
+                    Iterator<FlussoAsmAnnotation> classAnnotations = flussoClassVisitor.getClazzAnnotations().iterator();
+                    while (classAnnotations.hasNext()) {
+                        FlussoAsmAnnotation flussoAsmAnnotation = classAnnotations.next();
+                        if (CommandDescription.class.getName().equals(flussoAsmAnnotation.getAnnotationClassName())) {
+                            commandEntity.setCommandName(flussoAsmAnnotation.getAttr(CommandDescription.NAME).toString());
+                            commandEntity.setCommandMorphName(flussoAsmAnnotation.getAttr(CommandDescription.MORPH_NAME).toString());
+                            commandEntity.setCommandType(flussoAsmAnnotation.getAttr(CommandDescription.CMD_TYPE).toString());
+                            break;
+                        }
+                    }
+
+                    Set<CommandParamEntity> commandParamEntityList = new HashSet<>();
+                    Iterator<FlussoAsmAnnotation> fieldAnnotations = flussoClassVisitor.getFieldAnnotations().iterator();
+                    while (fieldAnnotations.hasNext()) {
+                        FlussoAsmAnnotation flussoAsmAnnotation = fieldAnnotations.next();
+                        if (CommandParam.class.getName().equals(flussoAsmAnnotation.getAnnotationClassName())) {
+                            CommandParamEntity commandParamEntity = new CommandParamEntity();
+                            commandParamEntity.setParamName(flussoAsmAnnotation.getAttr(CommandParam.PARAM_NAME).toString());
+                            commandParamEntity.setParamType(flussoAsmAnnotation.getAttr(CommandParam.PARAM_TYPE).toString());
+                            commandParamEntity.setCmdParamAlias(flussoAsmAnnotation.getAttr(CommandParam.PARAM_DISPLAY_NAME).toString());
+                            commandEntity.addCommandParamEntity(commandParamEntity);
+                        }
+                    }
+                    commandEntityList.add(commandEntity);
+                }
+
+            }
+            if (!CollectionUtils.isEmpty(commandEntityList)) {
+                commandRepository.saveAll(commandEntityList);
             }
         }
     }

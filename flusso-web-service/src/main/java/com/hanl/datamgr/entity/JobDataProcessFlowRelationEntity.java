@@ -20,7 +20,7 @@ import java.util.Date;
 @ToString(exclude = {"dataProcessFlowEntity"})
 @EqualsAndHashCode(exclude = {"dataProcessFlowEntity"})
 @Entity
-@Table(name = "job_data_process_flow_relation")
+@Table(name = "tb_job_data_process_flow_relation")
 public class JobDataProcessFlowRelationEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

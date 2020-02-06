@@ -18,7 +18,7 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "data_storage")
+@Table(name = "tb_data_storage")
 public class DataStorageEntity implements Serializable {
 
     @Id
@@ -34,11 +34,6 @@ public class DataStorageEntity implements Serializable {
 
     @Column(name = "reader")
     private String reader;//有哪些应用或者操作从这个表读取数据
-
-    @ManyToOne
-    @JoinColumn(name = "data_classify_id")
-    private BusDataClassifyEntity busDataClassifyEntity;
-
 
     @Column(name = "create_time")
     @CreationTimestamp

@@ -17,7 +17,7 @@ import java.util.*;
  */
 @Data
 @Entity
-@Table(name = "command_instance")
+@Table(name = "tb_cmd_instance")
 public class CommandInstanceEntity implements Serializable {
     @Id
     @GenericGenerator(name = "jpa-uuid", strategy = "uuid")

@@ -19,7 +19,7 @@ import java.util.Date;
 @ToString(exclude = {"commandInstanceEntity", "flowEntity"})
 @EqualsAndHashCode(exclude = {"commandInstanceEntity", "flowEntity"})
 @Entity
-@Table(name = "cmd_instance_flow_rel")
+@Table(name = "tb_cmd_instance_flow_rel")
 public class CommandInstanceFlowRelation {
 
     @Id

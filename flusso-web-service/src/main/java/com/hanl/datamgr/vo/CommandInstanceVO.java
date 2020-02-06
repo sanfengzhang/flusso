@@ -16,14 +16,12 @@ import java.util.*;
 @ToString
 public class CommandInstanceVO implements Serializable {
 
+    private String cmdId;
+
     private String commandInstanceName;
 
-    private List<CommandParamEntity> cmdParams=new ArrayList<>();
+    private Map<String, String> cmdParamValue = new HashMap<>();
 
-    private String command;
-
-    private List<String> subFlows=new ArrayList<>();
-
-    private String selectSubFlowClazz;
+    private List<String> subFlows = new ArrayList<>();
 
 }

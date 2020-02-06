@@ -22,7 +22,7 @@ import java.util.Date;
 @ToString(exclude = {"start","end","flowEntity"})
 @EqualsAndHashCode(exclude = {"start","end","flowEntity"})
 @Entity
-@Table(name = "flow_cmd_line")
+@Table(name = "tb_flow_cmd_line")
 public class FlowLineEntity implements Serializable {
 
     @Id

@@ -1,6 +1,8 @@
 package com.hanl.data.transform.command;
 
 import com.alibaba.fastjson.parser.ParserConfig;
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 import com.hanl.data.transform.utils.TypeUtils;
 import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.*;
@@ -33,10 +35,13 @@ public class FieldTypeConvertBuilder implements CommandBuilder {
         }
     }
 
+    @CommandDescription(morphName = "fieldTypeConvert", name = "字段类型转换节点",cmdType = "富化")
     private static final class RecordFieldTypeConvert extends AbstractCommand {
 
+        @CommandParam(paramName = "fieldTypeMap", paramType = "java.util.Map", paramDisplayName = "字段类型映射")
         private Map<String, String> fieldTypeMap = new HashMap<>();
 
+        @CommandParam(paramName = "parserConfig", paramType = "java.lang.String", paramDisplayName = "解析配置器")
         private ParserConfig parserConfig;
 
         public RecordFieldTypeConvert(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {

@@ -23,7 +23,7 @@ import java.util.List;
 @ToString(exclude = {"jobFlowRelSet"})
 @EqualsAndHashCode(exclude = {"jobFlowRelSet"})
 @Entity
-@Table(name = "job")
+@Table(name = "tb_job")
 public class JobEntity implements Serializable {
 
     public static final String JOB_RUNNING = "running";

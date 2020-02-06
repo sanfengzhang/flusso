@@ -16,8 +16,8 @@ import java.util.Set;
  */
 @Data
 @Entity
-@Table(name = "data_type")
-public class BusDataClassifyEntity implements java.io.Serializable {
+@Table(name = "tb_data_type")
+public class DataTypeEntity implements java.io.Serializable {
 
     @Id
     @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
@@ -26,12 +26,6 @@ public class BusDataClassifyEntity implements java.io.Serializable {
 
     @Column(name = "data_type_name")
     private String dataTypeName;//数据类型名称、和业务关联
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "busDataClassify")
-    private Set<BusDataClassifyFieldEntity> busDataClassifyFieldSet;//描述该类型数据的字段信息
-
-    @OneToMany(mappedBy = "busDataClassifyEntity", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private Set<DataStorageEntity> dataStorageSet = new HashSet<>();
 
     @Column(name = "create_time")
     @CreationTimestamp

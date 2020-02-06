@@ -1,6 +1,6 @@
 package com.hanl.datamgr.vo;
 
-import com.hanl.datamgr.entity.BusDataClassifyEntity;
+import com.hanl.datamgr.entity.DataTypeEntity;
 import com.hanl.datamgr.support.AlreadyInDB;
 import lombok.Data;
 import lombok.ToString;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class BusDataTypeVO extends BaseVO<BusDataClassifyEntity> {
+public class BusDataTypeVO extends BaseVO<DataTypeEntity> {
 
     private String id;
 
@@ -26,8 +26,6 @@ public class BusDataTypeVO extends BaseVO<BusDataClassifyEntity> {
     @NotBlank(message = "数据类型名称不能为空")
     @Length(max = 255)
     private String dataTypeName;
-
-    private List<FiledTypeVO> dataSchema;//
 
     private String dataTypeLineage;
 
@@ -40,13 +38,13 @@ public class BusDataTypeVO extends BaseVO<BusDataClassifyEntity> {
     private String desc;
 
     @Override
-    public BusDataClassifyEntity to() {
+    public DataTypeEntity to() {
 
         return null;
     }
 
     @Override
-    public void from(BusDataClassifyEntity busDataClassifyEntity) {
+    public void from(DataTypeEntity dataTypeEntity) {
 
     }
 }

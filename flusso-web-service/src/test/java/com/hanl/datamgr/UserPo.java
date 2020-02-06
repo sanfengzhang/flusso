@@ -1,7 +1,7 @@
 package com.hanl.datamgr;
 
-import com.hanl.data.common.CommandDescription;
-import com.hanl.data.common.CommandField;
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -16,15 +16,15 @@ import org.kitesdk.morphline.base.AbstractCommand;
 
 public class UserPo {
 
-    @CommandDescription(name = "用户算子", morphName = "User_Oper")
-    private static final class User  extends AbstractCommand {
-        @CommandField(fieldName = "userName", fieldType = "String")
+    @CommandDescription(name = "用户算子", morphName = "User_Oper", cmdType = "")
+    private static final class User extends AbstractCommand {
+        @CommandParam(paramName = "userName", paramType = "String")
         private String name;
 
-        @CommandField(fieldName = "password", fieldType = "String")
+        @CommandParam(paramName = "password", paramType = "String")
         private String password;
 
-        @CommandField(fieldName = "age", fieldType = "Int")
+        @CommandParam(paramName = "age", paramType = "Int")
         private int age;
 
         public User(CommandBuilder builder, Config config, org.kitesdk.morphline.api.Command parent, org.kitesdk.morphline.api.Command child, MorphlineContext context) {

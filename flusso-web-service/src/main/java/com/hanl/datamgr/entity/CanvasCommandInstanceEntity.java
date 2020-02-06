@@ -14,7 +14,7 @@ import java.util.Date;
  * @desc:
  */
 @Entity
-@Table(name = "canvas_cmd_instance")
+@Table(name = "tb_canvas_cmd_instance")
 @Data
 public class CanvasCommandInstanceEntity implements Serializable {
 

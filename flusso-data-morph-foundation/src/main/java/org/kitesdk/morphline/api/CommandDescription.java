@@ -1,4 +1,4 @@
-package com.hanl.data.common;
+package org.kitesdk.morphline.api;
 
 import java.lang.annotation.*;
 
@@ -18,7 +18,11 @@ public @interface CommandDescription {
 
     public static final String MORPH_NAME = "morphName";
 
+    public static final String CMD_TYPE = "cmdType";
+
     String name();
 
     String morphName();
+
+    String cmdType();
 }

@@ -2,8 +2,10 @@ package com.hanl.datamgr.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author: Hanl
@@ -11,33 +13,25 @@ import javax.persistence.*;
  * @desc:
  */
 @Entity
-@DiscriminatorValue("cmd_init_param")
+@Table(name = "tb_cmd_instance_param")
 @Data
-@EqualsAndHashCode(exclude = {"commandInstanceEntity"}, callSuper = true)
-public class CommandInstanceParamEntity extends FieldEntity {
+public class CommandInstanceParamEntity implements Serializable {
 
-    @ManyToOne
-    private CommandInstanceEntity commandInstanceEntity;
+    @Id
+    @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
+    @GeneratedValue(generator = "jpa-uuid")
+    private String id;
+
+    @Column(name = "param_value")
+    private String paramValue;
 
     @ManyToOne
     @JoinColumn(name = "cmd_param_id")
     private CommandParamEntity commandParamEntity;
 
+    @ManyToOne
+    @JoinColumn(name = "cmd_instance_id")
+    private CommandInstanceEntity commandInstanceEntity;
 
-    @Override
-    public String toString() {
-        String commandInstanceEntityId = "";
-        if (null != commandInstanceEntity) {
-            commandInstanceEntityId = commandInstanceEntity.getId();
-        }
-        return "CommandParamEntity{" +
-                "cmdDisplayName='" + cmdDisplayName + '\'' +
-                ", id='" + id + '\'' +
-                ", fieldName='" + fieldName + '\'' +
-                ", fieldType='" + fieldType + '\'' +
-                ", filedValue='" + fieldValue + '\'' +
-                ", format='" + format + '\'' +
-                ", commandInstanceEntity='" + commandInstanceEntityId + '\'' +
-                '}';
-    }
+
 }

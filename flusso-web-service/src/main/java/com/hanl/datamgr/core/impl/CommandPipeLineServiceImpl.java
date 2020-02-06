@@ -85,8 +85,9 @@ public class CommandPipeLineServiceImpl implements CommandPipeLineService {
             if ("callSubPipe".equals(morphName)) {
                 Set<CommandInstanceParamEntity> instanceParamEntities = node.getCommandInstanceEntity().getCmdInstanceParams();
                 for (CommandInstanceParamEntity instanceParamEntity : instanceParamEntities) {
-                    if ("flowId".equals(instanceParamEntity.getFieldName())) {
-                        String flowName = instanceParamEntity.getFieldValue();
+                    CommandParamEntity commandParamEntity = instanceParamEntity.getCommandParamEntity();
+                    if ("flowId".equals(commandParamEntity.getParamName())) {
+                        String flowName = instanceParamEntity.getParamValue();
                         if (!flowNameSet.contains(flowName)) {//----在集合中不存在的就加入,否则已经存在了就不需要递归查询其包含的子流程
                             flowNameSet.add(flowName);
                             findAllSubFlowName(flowName, flowNameSet);
@@ -111,9 +112,10 @@ public class CommandPipeLineServiceImpl implements CommandPipeLineService {
             if ("branchPipe".equals(morphName)) {
                 Set<CommandInstanceParamEntity> instanceParamEntities = node.getCommandInstanceEntity().getCmdInstanceParams();
                 for (CommandInstanceParamEntity instanceParamEntity : instanceParamEntities) {
-                    if ("branchFlowIds".equals(instanceParamEntity.getFieldName())) {
-                        List<String> flowNames = (List<String>) TypeUtils.fastJsonCast(instanceParamEntity.getFieldValue(),
-                                instanceParamEntity.getFieldType(), new ParserConfig());
+                    CommandParamEntity commandParamEntity = instanceParamEntity.getCommandParamEntity();
+                    if ("branchFlowIds".equals(commandParamEntity.getParamName())) {
+                        List<String> flowNames = (List<String>) TypeUtils.fastJsonCast(instanceParamEntity.getParamValue(),
+                                commandParamEntity.getParamType(), new ParserConfig());
                         for (String flowName : flowNames) {
                             if (!flowNameSet.contains(flowName)) {//----在集合中不存在的就加入,否则已经存在了就不需要递归查询其包含的子流程
                                 flowNameSet.add(flowName);
@@ -150,24 +152,23 @@ public class CommandPipeLineServiceImpl implements CommandPipeLineService {
     }
 
 
-
-
     private Map<String, Object> buildCommandMapByConfig(CommandInstanceEntity commandInstanceEntity, CommandPipeline commandPipeline) throws BusException {
         Set<CommandInstanceParamEntity> commandInstanceParamEntityList = commandInstanceEntity.getCmdInstanceParams();
         Map<String, Object> result = new HashMap<>();
         for (CommandInstanceParamEntity commandInstanceParamEntity : commandInstanceParamEntityList) {
-            String key = commandInstanceParamEntity.getFieldName();
+            CommandParamEntity commandParamEntity = commandInstanceParamEntity.getCommandParamEntity();
+            String key = commandParamEntity.getParamName();
             if (null == key || "".equals(key)) {
                 throw new BusException("Command初始化参数名称不能为空.");
             }
 
-            String valueString = commandInstanceParamEntity.getFieldValue();
-            Object value = TypeUtils.fastJsonCast(valueString, commandInstanceParamEntity.getFieldType(), new ParserConfig());
+            String valueString = commandInstanceParamEntity.getParamValue();
+            Object value = TypeUtils.fastJsonCast(valueString, commandParamEntity.getParamType(), new ParserConfig());
             if ("importCommands".equals(key)) {
                 commandPipeline.addImports((List<String>) value);
                 continue;
             }
-            result.put(commandInstanceParamEntity.getFieldName(), value);
+            result.put(key, value);
         }
         //-------------------构建节点的子流程
         result.put(AbstractCommand.COMMAND_INSTANCE_ID, commandInstanceEntity.getId());

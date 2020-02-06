@@ -1,5 +1,7 @@
 package com.hanl.data.transform.command;
 
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.*;
 import org.kitesdk.morphline.base.AbstractCommand;
@@ -31,17 +33,21 @@ public class BranchPipeBuilder implements CommandBuilder {
         }
     }
 
+    @CommandDescription(morphName = "branchPipe",name = "分支程调用节点",cmdType = "流程控制")
     private static final class BranchPipe extends AbstractCommand {
 
         private static final Logger logger = LoggerFactory.getLogger(BranchPipeBuilder.BranchPipe.class);
 
         private BranchPipeSelector branchPipeSelector;
 
+        @CommandParam(paramName = "branchPipeSelector", paramType = "java.lang.String", paramDisplayName = "分支流程选择器")
         private String branchPipelineSelectorClazz;
 
+        @CommandParam(paramName = "continueParentPipe", paramType = "java.lang.Boolean", paramDisplayName = "是否执行父流程")
         private boolean continueParentPipe;
 
         //这个分支节点包含哪些分支流程，如果不配置则所有的流程都可以成为分支流程的选择
+        @CommandParam(paramName = "branchFlowIds", paramType = "java.util.List", paramDisplayName = "分支流程列表")
         private List<String> branchFlowIds;
 
         private MorphlineContext context;

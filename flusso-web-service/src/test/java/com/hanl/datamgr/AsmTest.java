@@ -1,6 +1,6 @@
 package com.hanl.datamgr;
 
-import com.hanl.data.common.CommandField;
+import org.kitesdk.morphline.api.CommandParam;
 import com.hanl.datamgr.support.asm.FlussoClassVisitor;
 import org.junit.Test;
 import org.springframework.asm.ClassReader;
@@ -10,7 +10,6 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
-import org.springframework.core.type.classreading.AnnotationMetadataReadingVisitor;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
@@ -52,7 +51,7 @@ public class AsmTest {
                 MetadataReader reader = readerFactory.getMetadataReader(resource);
                 AnnotationMetadata annotationMetadata = reader.getAnnotationMetadata();
                 Set<MethodMetadata> set = annotationMetadata.getAnnotatedMethods(Column.class.getName());
-                System.out.println(annotationMetadata.getAllAnnotationAttributes(CommandField.class.getName()));
+                System.out.println(annotationMetadata.getAllAnnotationAttributes(CommandParam.class.getName()));
                 for (MethodMetadata methodMetadata : set) {
                     Map<String, Object> fieldAnnotation = methodMetadata.getAnnotationAttributes(Column.class.getName());
                     if (!CollectionUtils.isEmpty(fieldAnnotation)) {

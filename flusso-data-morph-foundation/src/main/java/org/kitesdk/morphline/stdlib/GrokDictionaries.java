@@ -47,7 +47,7 @@ import java.util.TreeMap;
 /**
  * Utility that parses and resolves a set of grok dictionaries ala logstash.
  */
-final class GrokDictionaries {
+public final class GrokDictionaries {
 
   /*
    * Uses a shaded version of com.google.code.regexp-0.2.3 to minimize potential dependency issues.

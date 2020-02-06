@@ -1,23 +1,23 @@
 package com.hanl.datamgr;
 
-import com.hanl.data.common.CommandDescription;
-import com.hanl.data.common.CommandField;
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 
 /**
  * @author: Hanl
  * @date :2020/1/16
  * @desc:
  */
-@CommandDescription(name = "IP富化算子", morphName = "IP_Transform")
+@CommandDescription(name = "IP富化算子", morphName = "IP_Transform",cmdType = "")
 public class CommandPo {
 
-    @CommandField(fieldName = "userName", fieldType = "String")
+    @CommandParam(paramName = "userName", paramType = "String")
     private String name;
 
-    @CommandField(fieldName = "password", fieldType = "String")
+    @CommandParam(paramName = "password", paramType = "String")
     private String password;
 
-    @CommandField(fieldName = "age", fieldType = "Int")
+    @CommandParam(paramName = "age", paramType = "Int")
     private int age;
 
     public String getName() {

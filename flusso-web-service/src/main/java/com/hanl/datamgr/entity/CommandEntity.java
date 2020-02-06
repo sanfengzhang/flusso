@@ -2,6 +2,8 @@ package com.hanl.datamgr.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,8 +17,10 @@ import java.util.*;
  * @desc:
  */
 @Data
+@EqualsAndHashCode(exclude = {"cmdParams", "commandInstanceEntityList"})
+@ToString(exclude = {"cmdParams", "commandInstanceEntityList"})
 @Entity
-@Table(name = "command")
+@Table(name = "tb_cmd")
 public class CommandEntity implements Serializable {
 
     @Id
@@ -55,23 +59,10 @@ public class CommandEntity implements Serializable {
     @Column(name = "update_time")
     private Date updateTime;//数据流程更新时间
 
-    @Override
-    public String toString() {
-        List<String> ids = new ArrayList<>();
-        commandInstanceEntityList.forEach(data -> {
-            ids.add(data.getId());
-        });
-        return "CommandEntity{" +
-                "id='" + id + '\'' +
-                ", commandName='" + commandName + '\'' +
-                ", commandMorphName='" + commandMorphName + '\'' +
-                ", commandClazz='" + commandClazz + '\'' +
-                ", commandType='" + commandType + '\'' +
-                ", commandProvider='" + commandProvider + '\'' +
-                ", commandInstanceEntityList=" + ids +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ",cmdParams="+cmdParams+
-                '}';
+    public void addCommandParamEntity(CommandParamEntity commandParamEntity) {
+        commandParamEntity.setCommandEntity(this);
+        this.cmdParams.add(commandParamEntity);
     }
+
+
 }

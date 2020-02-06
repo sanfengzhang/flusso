@@ -20,11 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.kitesdk.morphline.api.Command;
-import org.kitesdk.morphline.api.CommandBuilder;
-import org.kitesdk.morphline.api.MorphlineCompilationException;
-import org.kitesdk.morphline.api.MorphlineContext;
-import org.kitesdk.morphline.api.Record;
+import org.kitesdk.morphline.api.*;
 import org.kitesdk.morphline.base.AbstractCommand;
 
 import com.google.common.base.CharMatcher;
@@ -55,12 +51,21 @@ public final class SplitBuilder implements CommandBuilder {
   ///////////////////////////////////////////////////////////////////////////////
   // Nested classes:
   ///////////////////////////////////////////////////////////////////////////////
+  @CommandDescription(name = "分隔符解析",morphName = "split",cmdType = "正则解析")
   private static final class Split extends AbstractCommand {
 
+    @CommandParam(paramName="inputFieldName",paramType ="java.lang.String",paramDisplayName = "输入字段名称" )
     private final String inputFieldName;
+
+    @CommandParam(paramName="outputFieldName",paramType ="java.lang.String",paramDisplayName = "输出字段名称" )
     private final String outputFieldName;
+
+    @CommandParam(paramName="outputFieldNames",paramType ="java.util.List",paramDisplayName = "输出字段列表" )
     private final List<String> outputFieldNames;
+
+    @CommandParam(paramName="addEmptyStrings",paramType ="java.lang.Boolean",paramDisplayName = "添加空字符串" )
     private final boolean addEmptyStrings;
+
     private final Splitter splitter;
     
     public Split(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {

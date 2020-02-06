@@ -1,5 +1,7 @@
 package com.hanl.data.transform.command;
 
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 import com.typesafe.config.Config;
 import org.kitesdk.morphline.api.*;
 import org.kitesdk.morphline.base.AbstractCommand;
@@ -32,24 +34,34 @@ public final class JavaMethodAddValueBuilder implements CommandBuilder {
 
     }
 
+    @CommandDescription(morphName = "javaMethodAddValue", name = "JAVA方法富化节点",cmdType = "富化")
     private static final class DynamicAddValue extends AbstractCommand {
 
         private Method targetMethod;
 
         private Object target;
 
+        @CommandParam(paramName = "original_key", paramType = "java.lang.String", paramDisplayName = "富化字段名称")
         private String original_key;
 
+        @CommandParam(paramName = "derive_key", paramType = "java.lang.String", paramDisplayName = "富化后字段名称")
         private String derive_key;
 
+        @CommandParam(paramName = "class_name", paramType = "java.lang.String", paramDisplayName = "类名称")
+        private String className;
+
+        @CommandParam(paramName = "method_name", paramType = "java.lang.String", paramDisplayName = "方法名称")
+        private String methodName;
+
+        @CommandParam(paramName = "argument_class", paramType = "java.lang.String", paramDisplayName = "参数类型")
         private Class[] argumentClazzs;
 
         public DynamicAddValue(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) throws ScriptException, ClassNotFoundException,
                 InstantiationException, IllegalAccessException, NoSuchMethodException {
 
             super(builder, config, parent, child, context);
-            String className = getConfigs().getString(config, "class_name");
-            String methodName = getConfigs().getString(config, "method_name");
+            className = getConfigs().getString(config, "class_name");
+            methodName = getConfigs().getString(config, "method_name");
             original_key = getConfigs().getString(config, "original_key");
             derive_key = getConfigs().getString(config, "derive_key");
             String argumentClassNames[] = getConfigs().getString(config, "argument_class").split(",");

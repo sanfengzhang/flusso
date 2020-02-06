@@ -22,7 +22,7 @@ import java.util.Set;
 @ToString(exclude = {"jobFlowRelSet", "flowLineSet"})
 @EqualsAndHashCode(exclude = {"jobFlowRelSet", "flowLineSet"})
 @Entity
-@Table(name = "data_process_flow")
+@Table(name = "tb_data_process_flow")
 public class DataProcessFlowEntity implements java.io.Serializable {
 
     @Id

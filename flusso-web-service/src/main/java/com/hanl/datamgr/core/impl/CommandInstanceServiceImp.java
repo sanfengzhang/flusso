@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author: Hanl
@@ -46,12 +44,11 @@ public class CommandInstanceServiceImp implements CommandInstanceService {
     public void createCmdInstance(CommandInstanceVO vo) throws BusException {
         CommandInstanceEntity entity = new CommandInstanceEntity();
         entity.setCommandInstanceName(vo.getCommandInstanceName());
-        String commandId = vo.getCommand();
+        String commandId = vo.getCmdId();
         CommandEntity commandEntity = commandRepository.findById(commandId).get();
         entity.setCommand(commandEntity);
-        List<CommandParamEntity> commandParamEntityList = vo.getCmdParams();
+        Map<String, String> cmdParamValueMap = vo.getCmdParamValue();
         List<DataProcessFlowEntity> flowEntities = flowRepository.findAllById(vo.getSubFlows());
-
         entity = commandInstanceRepository.save(entity);
         List<CommandInstanceFlowRelation> relations = new ArrayList<>();
         for (DataProcessFlowEntity flowEntity : flowEntities) {
@@ -61,16 +58,14 @@ public class CommandInstanceServiceImp implements CommandInstanceService {
             relations.add(relation);
         }
         commandInstanceFlowRelationRepository.saveAll(relations);
-
         List<CommandInstanceParamEntity> commandInstanceParamEntities = new ArrayList<>();
-        for (CommandParamEntity commandParamEntity : commandParamEntityList) {
-            Optional<CommandParamEntity> optionalCommandParamEntity = commandParamRepository.findById(commandParamEntity.getId());
+        Iterator<Map.Entry<String, String>> it = cmdParamValueMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> en = it.next();
+            Optional<CommandParamEntity> optionalCommandParamEntity = commandParamRepository.findById(en.getKey());
             CommandParamEntity commandParamEntity1 = optionalCommandParamEntity.get();
-
             CommandInstanceParamEntity commandInstanceParamEntity = new CommandInstanceParamEntity();
-            commandInstanceParamEntity.setFieldName(commandParamEntity1.getFieldName());
-            commandInstanceParamEntity.setFieldType(commandParamEntity1.getFieldType());
-            commandInstanceParamEntity.setFieldValue(commandParamEntity.getFieldValue());
+            commandInstanceParamEntity.setParamValue(en.getValue());
             commandInstanceParamEntity.setCommandParamEntity(commandParamEntity1);
             commandInstanceParamEntity.setCommandInstanceEntity(entity);
             commandInstanceParamEntities.add(commandInstanceParamEntity);

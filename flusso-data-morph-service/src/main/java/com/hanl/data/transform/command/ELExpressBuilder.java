@@ -1,5 +1,7 @@
 package com.hanl.data.transform.command;
 
+import org.kitesdk.morphline.api.CommandDescription;
+import org.kitesdk.morphline.api.CommandParam;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import com.typesafe.config.Config;
@@ -34,12 +36,15 @@ public class ELExpressBuilder implements CommandBuilder {
         }
     }
 
+    @CommandDescription(morphName = "EL", name = "EL表达式",cmdType = "计算")
     private static final class ELExpress extends AbstractCommand {
 
         private ExpressRunner runner;
 
+        @CommandParam(paramName = "cache_warming", paramType = "java.util.Map", paramDisplayName = "EL预热表达式")
         private final Map<String, String> expressesToKey = new HashMap<>();
 
+        @CommandParam(paramName = "expresses", paramType = "java.util.Map", paramDisplayName = "EL表达式")
         private final Map<String, String> expresses = new HashMap<>();
 
         public ELExpress(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
